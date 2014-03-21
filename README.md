@@ -3,7 +3,8 @@ Launcher3
 
 更改官方的Launcher3使得可以在eclipse编译
 
-* targetSdkVersion必须是19 
+* targetSdkVersion必须是19
+* 如果修改AndroidManifest.xml后有错误，project -> clean
 
 
 ---
@@ -12,3 +13,4 @@ Launcher3
 * [概述](http://www.fookwood.com/archives/788)
 * [Android的触摸控制流程](http://www.fookwood.com/archives/806)
 * [Launcher3界面的布局和结构](http://www.fookwood.com/archives/846)
+* [Launcher3中的常用类](http://www.fookwood.com/archives/854)
