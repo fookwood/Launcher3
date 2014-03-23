@@ -14,3 +14,6 @@ Launcher3
 * [Android的触摸控制流程](http://www.fookwood.com/archives/806)
 * [Launcher3界面的布局和结构](http://www.fookwood.com/archives/846)
 * [Launcher3中的常用类](http://www.fookwood.com/archives/854)
+* [Launcher3的启动流程（一）](http://www.fookwood.com/archives/863)
+
+
