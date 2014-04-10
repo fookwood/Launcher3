@@ -16,5 +16,6 @@ Launcher3
 * [Launcher3中的常用类](http://www.fookwood.com/archives/854)
 * [Launcher3的启动流程（一）](http://www.fookwood.com/archives/863)
 * [细说ItemInfo](http://www.fookwood.com/archives/875)
+* [Launcher3的启动流程（二）](http://www.fookwood.com/archives/894)
 
 
