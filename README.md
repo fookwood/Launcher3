@@ -17,5 +17,6 @@ Launcher3
 * [Launcher3的启动流程（一）](http://www.fookwood.com/archives/863)
 * [细说ItemInfo](http://www.fookwood.com/archives/875)
 * [Launcher3的启动流程（二）](http://www.fookwood.com/archives/894)
+* [Launcher3分析之拖动图标的流程——按下](http://www.fookwood.com/archives/925)
 
 
