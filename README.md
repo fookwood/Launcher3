@@ -3,7 +3,7 @@ Launcher3
 
 更改官方的Launcher3使得可以在eclipse编译
 
-* targetSdkVersion必须是19
+* targetSdkVersion~~必须是19~~(之前说的有错误)
 * 如果修改AndroidManifest.xml后有错误，project -> clean
 
 
