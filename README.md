@@ -21,5 +21,6 @@ Launcher3
 * [Launcher3分析之拖动图标的流程——移动](http://www.fookwood.com/archives/940)
 * [Launcher3分析之拖动图标的流程——放下](http://www.fookwood.com/archives/946)
 * [PagedView的原理 – 滑动](http://www.fookwood.com/archives/955)
+* [如何给Launcher3添加左屏](http://www.fookwood.com/archives/1048)
 
 
