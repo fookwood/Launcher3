@@ -235,8 +235,6 @@ public class LauncherProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
-        // always notify the backup agent
-        LauncherBackupAgentHelper.dataChanged(getContext());
         if (mListener != null) {
             mListener.onLauncherProviderChange();
         }
