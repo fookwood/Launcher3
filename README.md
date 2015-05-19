@@ -1,10 +1,11 @@
 Launcher3
 =========
 
-更改官方的Launcher3使得可以在eclipse编译
+更改官方的Launcher3使得可以在Android Studio编译
 
-* targetSdkVersion ~~必须是19~~  (之前说的有错误)
-* 如果修改AndroidManifest.xml后有错误，project -> clean
+* [原始地址](https://android.googlesource.com/platform/packages/apps/Launcher3/)，从729ad90提交开始
+* 最小sdk版本为16
+* Android 5.0 版本及以上可能会出现因为相同权限声明而不能安装的问题
 
 
 ---
@@ -22,5 +23,7 @@ Launcher3
 * [Launcher3分析之拖动图标的流程——放下](http://www.fookwood.com/archives/946)
 * [PagedView的原理 – 滑动](http://www.fookwood.com/archives/955)
 * [如何给Launcher3添加左屏](http://www.fookwood.com/archives/1048)
+* [IconCache原理](http://www.fookwood.com/archives/1072)
+* [找个Launcher开发](http://www.fookwood.com/archives/1066)
 
 
