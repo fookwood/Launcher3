@@ -26,5 +26,6 @@ Launcher3
 * [如何给Launcher3添加左屏](http://www.fookwood.com/archives/1048)
 * [IconCache原理](http://www.fookwood.com/archives/1072)
 * [找个Launcher开发](http://www.fookwood.com/archives/1066)
+* [LauncherRootView和DragLayer的布局过程](http://www.fookwood.com/archives/1085)
 
 
