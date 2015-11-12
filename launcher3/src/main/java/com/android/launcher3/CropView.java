@@ -300,12 +300,12 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
                     adjustment[0] = (edges.right - getWidth()) / scale;
                 }
                 if (edges.top > 0) {
-                    adjustment[1] = FloatMath.ceil(edges.top / scale);
+                    adjustment[1] = (float)Math.ceil(edges.top / scale);
                 } else if (edges.bottom < getHeight()) {
                     adjustment[1] = (edges.bottom - getHeight()) / scale;
                 }
                 for (int dim = 0; dim <= 1; dim++) {
-                    if (coef[dim] > 0) adjustment[dim] = FloatMath.ceil(adjustment[dim]);
+                    if (coef[dim] > 0) adjustment[dim] = (float)Math.ceil(adjustment[dim]);
                 }
 
                 mInverseRotateMatrix.mapPoints(adjustment);
