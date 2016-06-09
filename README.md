@@ -6,6 +6,7 @@ Launcher3
 * [原始地址](https://android.googlesource.com/platform/packages/apps/Launcher3/)，从729ad90提交开始
 * 最小sdk版本为16
 * Android 5.0 版本及以上可能会出现因为相同权限声明而不能安装的问题
+* 如果你想要可以在Eclipse编译的版本，可以看这个tag: GOODBYE_ECLIPSE
 
 
 ---
@@ -25,5 +26,6 @@ Launcher3
 * [如何给Launcher3添加左屏](http://www.fookwood.com/archives/1048)
 * [IconCache原理](http://www.fookwood.com/archives/1072)
 * [找个Launcher开发](http://www.fookwood.com/archives/1066)
+* [LauncherRootView和DragLayer的布局过程](http://www.fookwood.com/archives/1085)
 
 
