@@ -65,7 +65,6 @@
 
     <application
         android:allowBackup="@bool/enable_backup"
-        android:backupAgent="com.android.launcher3.LauncherBackupAgentHelper"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
         android:label="@string/app_name"
