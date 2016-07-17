@@ -16,14 +16,14 @@
 
 package com.android.launcher3;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -35,13 +35,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.launcher3.util.Thunk;
+
 class LauncherClings implements OnClickListener {
     private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
 
     private static final String TAG_CROP_TOP_AND_SIDES = "crop_bg_top_and_sides";
-
-    private static final boolean DISABLE_CLINGS = false;
 
     private static final int SHOW_CLING_DURATION = 250;
     private static final int DISMISS_CLING_DURATION = 200;
@@ -49,8 +49,9 @@ class LauncherClings implements OnClickListener {
     // New Secure Setting in L
     private static final String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
 
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private LayoutInflater mInflater;
+    @Thunk boolean mIsVisible;
 
     /** Ctor */
     public LauncherClings(Launcher launcher) {
@@ -68,7 +69,7 @@ class LauncherClings implements OnClickListener {
             // Copy the shortcuts from the old database
             LauncherModel model = mLauncher.getModel();
             model.resetLoadedState(false, true);
-            model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+            model.startLoader(PagedView.INVALID_RESTORE_PAGE,
                     LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
                             | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             // Set the flag to skip the folder cling
@@ -91,6 +92,7 @@ class LauncherClings implements OnClickListener {
      * package was not preinstalled and there exists a db to migrate from.
      */
     public void showMigrationCling() {
+        mIsVisible = true;
         mLauncher.hideWorkspaceSearchAndHotseat();
 
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
@@ -117,6 +119,7 @@ class LauncherClings implements OnClickListener {
     }
 
     public void showLongPressCling(boolean showWelcome) {
+        mIsVisible = true;
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
         View cling = mInflater.inflate(R.layout.longpress_cling, root, false);
 
@@ -124,7 +127,7 @@ class LauncherClings implements OnClickListener {
 
             @Override
             public boolean onLongClick(View v) {
-                mLauncher.getWorkspace().enterOverviewMode();
+                mLauncher.showOverviewMode(true);
                 dismissLongPressCling();
                 return true;
             }
@@ -174,7 +177,7 @@ class LauncherClings implements OnClickListener {
         });
     }
 
-    private void dismissLongPressCling() {
+    @Thunk void dismissLongPressCling() {
         Runnable dismissCb = new Runnable() {
             public void run() {
                 dismissCling(mLauncher.findViewById(R.id.longpress_cling), null,
@@ -185,7 +188,7 @@ class LauncherClings implements OnClickListener {
     }
 
     /** Hides the specified Cling */
-    private void dismissCling(final View cling, final Runnable postAnimationCb,
+    @Thunk void dismissCling(final View cling, final Runnable postAnimationCb,
                               final String flag, int duration) {
         // To catch cases where siblings of top-level views are made invisible, just check whether
         // the cling is directly set to GONE before dismissing it.
@@ -196,6 +199,7 @@ class LauncherClings implements OnClickListener {
                     mLauncher.getSharedPrefs().edit()
                         .putBoolean(flag, true)
                         .apply();
+                    mIsVisible = false;
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -209,12 +213,13 @@ class LauncherClings implements OnClickListener {
         }
     }
 
-    /** Returns whether the clings are enabled or should be shown */
-    private boolean areClingsEnabled() {
-        if (DISABLE_CLINGS) {
-            return false;
-        }
+    public boolean isVisible() {
+        return mIsVisible;
+    }
 
+    /** Returns whether the clings are enabled or should be shown */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private boolean areClingsEnabled() {
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
@@ -227,10 +232,7 @@ class LauncherClings implements OnClickListener {
 
         // Restricted secondary users (child mode) will potentially have very few apps
         // seeded when they start up for the first time. Clings won't work well with that
-        boolean supportsLimitedUsers =
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-        Account[] accounts = AccountManager.get(mLauncher).getAccounts();
-        if (supportsLimitedUsers && accounts.length == 0) {
+        if (Utilities.ATLEAST_JB_MR2) {
             UserManager um = (UserManager) mLauncher.getSystemService(Context.USER_SERVICE);
             Bundle restrictions = um.getUserRestrictions();
             if (restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false)) {
