@@ -17,29 +17,66 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.UserHandle;
-import android.os.UserManager;
+
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.LongArrayMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UserManagerCompatVL extends UserManagerCompatV17 {
+    private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
+
     private final PackageManager mPm;
+    private final Context mContext;
 
     UserManagerCompatVL(Context context) {
         super(context);
         mPm = context.getPackageManager();
+        mContext = context;
+    }
+
+    @Override
+    public void enableAndResetCache() {
+        synchronized (this) {
+            mUsers = new LongArrayMap<>();
+            mUserToSerialMap = new HashMap<>();
+            List<UserHandle> users = mUserManager.getUserProfiles();
+            if (users != null) {
+                for (UserHandle user : users) {
+                    long serial = mUserManager.getSerialNumberForUser(user);
+                    UserHandleCompat userCompat = UserHandleCompat.fromUser(user);
+                    mUsers.put(serial, userCompat);
+                    mUserToSerialMap.put(userCompat, serial);
+                }
+            }
+        }
     }
 
     @Override
     public List<UserHandleCompat> getUserProfiles() {
+        synchronized (this) {
+            if (mUsers != null) {
+                List<UserHandleCompat> users = new ArrayList<>();
+                users.addAll(mUserToSerialMap.keySet());
+                return users;
+            }
+        }
+
         List<UserHandle> users = mUserManager.getUserProfiles();
         if (users == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ArrayList<UserHandleCompat> compatUsers = new ArrayList<UserHandleCompat>(
                 users.size());
@@ -60,6 +97,20 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
             return label;
         }
         return mPm.getUserBadgedLabel(label, user.getUser());
+    }
+
+    @Override
+    public long getUserCreationTime(UserHandleCompat user) {
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            return mUserManager.getUserCreationTime(user.getUser());
+        }
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+        String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
+        if (!prefs.contains(key)) {
+            prefs.edit().putLong(key, System.currentTimeMillis()).apply();
+        }
+        return prefs.getLong(key, 0);
     }
 }
 
